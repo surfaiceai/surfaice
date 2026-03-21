@@ -2,7 +2,11 @@
 
 **Describe your UI once. Agents navigate it. CI verifies it. Humans review it.**
 
-Surfaice is an open standard for describing web UI structure in a markdown-like format (`.surfaice.md`). It's like `sitemap.xml` for interactive capabilities — but instead of listing pages for search engines, it describes what your app can *do* for AI agents.
+> **Who is this for?** Developers building with AI coding tools (Cursor, Windsurf, Copilot) who need to keep their UI quality from degrading as features pile up.
+
+## The Vision
+
+The web has standards for everything machines need to know — except what the UI can do.
 
 ```
 robots.txt     → what bots can crawl
@@ -11,86 +15,37 @@ llms.txt       → what the site is about
 surfaice.md    → what the UI can do
 ```
 
-> **Who is this for?** Developers building with AI coding tools (Cursor, Windsurf, Copilot) who need to keep their UI quality from degrading as features pile up.
+**Surfaice** makes your web UI readable by machines. Annotate your React components once, and your app can serve itself as a clean, token-efficient markdown document — alongside the normal HTML it already serves.
 
-## The Problem
+Same URL. Same parameters. Same authentication. Just a different content type.
 
-Vibe coding (AI-assisted development) makes it easy to build new features — and trivially easy to break existing ones.
-
-- **AI agents** burn thousands of tokens on screenshots and DOM trees to understand a page that could be described in 200 tokens
-- **Developers** have no lightweight way to document "what this UI is" that stays in sync with reality
-- **UI changes are invisible in PRs** — you can't review a UI change by reading a React diff
-
-There's no standard for telling machines what your UI can do.
+```
+GET /settings              → text/html       → normal page for humans
+GET /settings              → text/surfaice   → markdown page for agents
+    Accept: text/surfaice
+```
 
 ## How It Works
 
-Surfaice has two modes — both powered by the same annotations in your components:
+### The Core Idea
 
-### 🤖 Runtime Mode — Live UI for Agents
+Your app already knows what's on each page — the components, the labels, the actions. Surfaice captures that knowledge through lightweight annotations and makes it available as structured markdown.
 
-Agents request the markdown version of any page and get a **live snapshot with real data**:
-
-```
-GET /settings
-Accept: text/surfaice
-
-→ Returns:
-
-# /settings [auth-required]
-
-## Profile Section
-- [name] textbox "Display Name" → current: "Jane Doe"
-- [email] textbox "Email" (readonly) → shows: "jane@example.com"
-- [notifications] badge → shows: 3
-- [save] button "Save Changes" → PUT /api/profile
-
-## Danger Zone
-- [delete] button "Delete Account" (destructive) → DELETE /api/account
-```
-
-~200 tokens. No screenshots. No DOM parsing. The agent knows exactly what's on the page and what it can do.
-
-### 📄 Build Mode — Static Manifests for CI & PRs
-
-At build time, Surfaice exports `.surfaice.md` files to your repo. CI diffs them to catch UI regressions:
-
-```diff
-# PR diff — instantly readable UI change review
-
-  ## Profile Section
-  - [name] textbox "Display Name"
-- - [save] button "Save Changes" → PUT /api/profile
-+ - [save] button "Save" → PUT /api/profile
-+ - [cancel] button "Cancel" → navigates: /dashboard
-  - [delete] button "Delete Account" (destructive)
-```
-
-Reviewers see exactly what changed in the UI — no clicking through the app, no screenshots.
-
-## Quick Start
-
-### 1. Install
-
-```bash
-npm install @surfaice/react @surfaice/next
-```
-
-### 2. Annotate Your Components
+**Step 1: Annotate your components**
 
 ```tsx
 import { ui } from '@surfaice/react'
 
 function SettingsPage({ user }) {
   return (
-    <ui.page route="/settings" states={['auth-required']}>
+    <ui.page route="/settings">
       <ui.section name="Profile">
         <ui.element id="name" type="textbox" label="Display Name"
           value={user.name} action="PUT /api/profile">
           <input value={user.name} onChange={handleChange} />
         </ui.element>
         <ui.element id="save" type="button" label="Save Changes"
-          action="PUT /api/profile" result="toast 'Saved!'"
+          action="PUT /api/profile" result="toast 'Saved!'">
           <button onClick={handleSave}>Save Changes</button>
         </ui.element>
       </ui.section>
@@ -99,113 +54,128 @@ function SettingsPage({ user }) {
 }
 ```
 
-In production, `<ui.*>` wrappers render nothing extra — zero overhead. They only activate when Surfaice is enabled.
+The `<ui.*>` wrappers render nothing extra in production — zero overhead. They just capture metadata about your UI.
 
-### 3. Enable the Middleware
+**Step 2: Enable the middleware**
 
 ```ts
 // next.config.ts
 import { withSurfaice } from '@surfaice/next'
 
 export default withSurfaice({
-  enabled: true,          // master toggle
-  mode: 'query',          // /settings?surfaice=true → markdown
-})
-```
-
-### 4. Try It
-
-```bash
-# Human view (normal)
-curl https://myapp.com/settings
-# → HTML page
-
-# Agent view (markdown)
-curl https://myapp.com/settings?surfaice=true
-# → Live .surfaice.md with real data
-```
-
-### 5. Add CI Protection
-
-```bash
-# Export static manifests
-surfaice export
-
-# Check for drift
-surfaice check
-
-# See what changed
-surfaice diff
-```
-
-## The Toggle
-
-Surfaice can be turned on/off and access-controlled:
-
-```ts
-withSurfaice({
   enabled: process.env.SURFAICE_ENABLED === 'true',
-  mode: 'query',  // ?surfaice=true | 'header' | 'route'
 })
 ```
 
-See [docs](./docs/) for advanced configuration (auth, route restrictions, per-page overrides).
+**Step 3: That's it.** Your app now speaks two languages:
 
-## Three Consumers, One Source
+```bash
+# Humans get HTML (as always)
+curl https://myapp.com/settings
+# → full interactive page
 
-```
-                @surfaice/react (annotations in your code)
-                        │
-            ┌───────────┼───────────┐
-            │           │           │
-            ▼           ▼           ▼
-       🤖 Agents    ✅ CI/CD    👀 Humans
-       Live markdown  Drift       PR diffs
-       with real data detection   readable UI changes
+# Agents get markdown (new!)
+curl -H "Accept: text/surfaice" https://myapp.com/settings
+# → structured description with live data
 ```
 
-**Agents** hit the runtime endpoint and understand your UI in ~200 tokens — no screenshots, no DOM scraping, no guessing.
+### What Agents See
 
-**CI** exports static manifests at build time and diffs against the committed version — any UI regression fails the build.
+When an agent requests any page with `Accept: text/surfaice`, it gets a live snapshot — real data, real state, real actions:
 
-**Humans** review `.surfaice.md` changes in PRs like they review code — structural, clear, meaningful diffs.
+```markdown
+# /settings
+
+## Profile
+- [name] textbox "Display Name" → current: "Jane Doe"
+- [email] textbox "Email" (readonly) → shows: "jane@example.com"
+- [save] button "Save Changes" → PUT /api/profile → toast "Saved!"
+
+## Danger Zone
+- [delete] button "Delete Account" (destructive) → DELETE /api/account → confirms: modal
+```
+
+~150 tokens. No screenshots. No DOM parsing. No guessing.
+
+The same URL with different auth returns different content — just like the HTML version. An admin sees admin elements. A logged-out user sees the login form. The markdown always mirrors reality.
+
+### What CI Sees
+
+At build time, Surfaice exports static `.surfaice.md` files. CI diffs them to catch regressions:
+
+```diff
+# PR diff — UI changes are instantly readable
+
+  ## Profile
+  - [name] textbox "Display Name"
+- - [save] button "Save Changes" → PUT /api/profile
++ - [save] button "Save" → PUT /api/profile
++ - [cancel] button "Cancel" → navigates: /dashboard
+```
+
+No clicking through the app. No screenshot comparisons. Just readable structural diffs.
+
+### What Humans See
+
+The `.surfaice.md` files in your repo are valid Markdown — they render beautifully in GitHub, VSCode, or any markdown viewer. They're living documentation that never goes stale because they're generated from the same annotations that power the runtime.
+
+## Install
+
+```bash
+npm install @surfaice/react @surfaice/next
+```
+
+## CLI
+
+```bash
+surfaice export    # Generate .surfaice.md from annotations (build time)
+surfaice check     # Verify exported files match committed ones (CI)
+surfaice diff      # Show what changed between last export and now
+```
+
+## Architecture
+
+```
+              @surfaice/react
+              (annotations in your components)
+                      │
+          ┌───────────┼───────────┐
+          │           │           │
+          ▼           ▼           ▼
+     🤖 Runtime   📄 Build    👀 Repo
+     Agents get    CI diffs    Humans read
+     live markdown static files living docs
+     via Accept    to catch    in PRs and
+     header        regressions GitHub
+```
 
 ## Packages
 
 | Package | Description | Status |
 |---------|-------------|--------|
-| `@surfaice/react` | Annotation components + runtime data collection | 🚧 In progress |
-| `@surfaice/next` | Next.js middleware, dev overlay, build export | 🚧 In progress |
 | `@surfaice/format` | `.surfaice.md` parser and serializer | 🚧 In progress |
+| `@surfaice/react` | React annotation components | 🚧 In progress |
+| `@surfaice/next` | Next.js middleware + build export | 📋 Planned |
 | `@surfaice/differ` | Structural diff engine | 📋 Planned |
 | `@surfaice/cli` | CLI tool (`export`, `check`, `diff`) | 📋 Planned |
 | `@surfaice/action` | GitHub Action for CI | 📋 Planned |
 
-## Format Specification
+## Format
 
-See [spec/FORMAT.md](./spec/FORMAT.md) for the full `.surfaice.md` format spec.
+See [spec/FORMAT.md](./spec/FORMAT.md) for the full `.surfaice.md` specification.
 
 ## Why "Surfaice"?
 
-**Surface** (what users interact with) + **AI** (who else consumes it) = **Surfaice**.
-
-The web has standards for everything machines need to know — except what the UI can do:
-
-| Standard | Purpose | For |
-|----------|---------|-----|
-| `robots.txt` | What bots can crawl | Search crawlers |
-| `sitemap.xml` | What pages exist | Search engines |
-| `llms.txt` | What the site is about | LLMs |
-| **`surfaice.md`** | **What the UI can do** | **AI agents** |
+**Surface** (what users interact with) + **AI** (who else needs to understand it) = **Surfaice**.
 
 ## Contributing
 
-We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## License
 
-MIT — free to use, modify, and distribute.
+MIT
 
 ---
 
-*Built by [surfaiceai](https://github.com/surfaiceai) — making the web's interactive surface readable by machines.*
+*Making the web's interactive surface readable by machines.*
