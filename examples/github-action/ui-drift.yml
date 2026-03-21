@@ -1,0 +1,43 @@
+# Example: Surfaice UI drift detection workflow
+# Copy this to .github/workflows/ui-drift.yml in your app repo
+
+name: UI Drift Check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  surfaice:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build app
+        run: pnpm build
+
+      - name: Start app
+        run: pnpm start &
+
+      - name: Wait for app to be ready
+        run: npx wait-on http://localhost:3000 --timeout 30000
+
+      - name: Check for UI drift
+        uses: surfaiceai/surfaice/packages/action@main
+        with:
+          base-url: 'http://localhost:3000'
+          surfaice-dir: 'surfaice/'
+          fail-on-drift: 'true'
