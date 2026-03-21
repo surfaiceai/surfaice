@@ -1,6 +1,9 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, createContext } from 'react'
 import { SurfaiceContext } from './context'
 import type { Element, ElementType, Capability } from '@surfaice/format'
+
+// Inner context to pass section name down to ui.element
+const SectionNameContext = createContext<string | null>(null)
 
 // ── ui.page ──────────────────────────────────────────────────────────────────
 
@@ -40,7 +43,11 @@ function UISection({ name, children }: UISectionProps) {
     }
   }, [ctx.enabled, name])
 
-  return <>{children}</>
+  return (
+    <SectionNameContext.Provider value={name}>
+      {children}
+    </SectionNameContext.Provider>
+  )
 }
 
 // ── ui.element ────────────────────────────────────────────────────────────────
@@ -66,17 +73,20 @@ export interface UIElementProps {
 
 function UIElement({ children, value, shows, ...props }: UIElementProps) {
   const ctx = useContext(SurfaiceContext)
+  const sectionName = useContext(SectionNameContext)
 
   useEffect(() => {
     if (ctx.enabled) {
-      ctx.registerElement({
-        ...props,
-        // Runtime values override template bindings for live agent snapshots
-        value: value !== undefined ? String(value) : props.current,
-        shows: shows !== undefined ? String(shows) : undefined,
-      })
+      ctx.registerElement(
+        {
+          ...props,
+          value: value !== undefined ? String(value) : props.current,
+          shows: shows !== undefined ? String(shows) : undefined,
+        },
+        sectionName ?? undefined,
+      )
     }
-  }, [ctx.enabled, value, shows, props.id])
+  }, [ctx.enabled, value, shows, props.id, sectionName])
 
   return <>{children}</>
 }
