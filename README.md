@@ -8,108 +8,200 @@ Surfaice is an open standard for describing web UI structure in a markdown-like 
 robots.txt     → what bots can crawl
 sitemap.xml    → what pages exist
 llms.txt       → what the site is about
-surface.md     → what the UI can do
+surfaice.md    → what the UI can do
 ```
 
 ## The Problem
 
-Vibe coding (AI-assisted development) makes it easy to build new features — and trivially easy to break existing ones. There's no standard, machine-readable format for describing *what a web app is supposed to do*.
+Vibe coding (AI-assisted development) makes it easy to build new features — and trivially easy to break existing ones.
 
-- **Test scripts** (Playwright, Cypress) describe procedures, not structure — they break when UI changes
-- **API specs** (OpenAPI) describe endpoints, not screens — they say nothing about what users see
-- **Visual tools** (Storybook, Figma) describe components, not pages — too granular, too framework-coupled
+- **AI agents** burn thousands of tokens on screenshots and DOM trees to understand a page that could be described in 200 tokens
+- **Developers** have no lightweight way to document "what this UI is" that stays in sync with reality
+- **CI pipelines** can't catch UI regressions without expensive, brittle test scripts
 
-## The Solution
+There's no standard for telling machines what your UI can do.
 
-A `.surfaice.md` file that describes your UI the way a wireframe describes a design — structurally, declaratively, readable by both humans and agents:
+## How It Works
 
-```markdown
+Surfaice has two modes — both powered by the same annotations in your components:
+
+### 🤖 Runtime Mode — Live UI for Agents
+
+Agents request the markdown version of any page and get a **live snapshot with real data**:
+
+```
+GET /settings
+Accept: text/surfaice
+
+→ Returns:
+
 # /settings [auth-required]
 
 ## Profile Section
-- [avatar] image-upload "Profile Photo" → PUT /api/profile/avatar
-- [name] textbox "Display Name" → current: {user.name}
-- [email] textbox "Email" (readonly) → shows: {user.email}
-- [save] button "Save Changes" → PUT /api/profile → toast "Saved!"
+- [name] textbox "Display Name" → current: "Haosu Wu"
+- [email] textbox "Email" (readonly) → shows: "haosu@example.com"
+- [notifications] badge → shows: 3
+- [save] button "Save Changes" → PUT /api/profile
 
 ## Danger Zone
-- [delete] button "Delete Account" (destructive) → confirms: modal → DELETE /api/account
-
-## States
-- [loading]: [save] disabled, shows spinner
-- [error]: inline-error below [save] "Failed to save"
+- [delete] button "Delete Account" (destructive) → DELETE /api/account
 ```
 
-Three consumers, one file:
-- **🤖 AI Agents** — understand your UI in ~200 tokens, no screenshots needed
-- **✅ CI/CD** — detect UI drift automatically, fail PRs that break things
-- **👀 Humans** — review UI changes as readable markdown diffs
+~200 tokens. No screenshots. No DOM parsing. The agent knows exactly what's on the page and what it can do.
+
+### 📄 Build Mode — Static Manifests for CI & PRs
+
+At build time, Surfaice exports `.surfaice.md` files to your repo. CI diffs them to catch UI regressions:
+
+```diff
+# PR diff — instantly readable UI change review
+
+  ## Profile Section
+  - [name] textbox "Display Name"
+- - [save] button "Save Changes" → PUT /api/profile
++ - [save] button "Save" → PUT /api/profile
++ - [cancel] button "Cancel" → navigates: /dashboard
+  - [delete] button "Delete Account" (destructive)
+```
+
+Reviewers see exactly what changed in the UI — no clicking through the app, no screenshots.
 
 ## Quick Start
 
+### 1. Install
+
 ```bash
-# Install
-npm install -g surfaice
+npm install @surfaice/react @surfaice/next
+```
 
-# Generate a manifest from any live URL
-surfaice init https://myapp.com
+### 2. Annotate Your Components
 
-# Verify your UI still matches the manifest
+```tsx
+import { ui } from '@surfaice/react'
+
+function SettingsPage({ user }) {
+  return (
+    <ui.page route="/settings" states={['auth-required']}>
+      <ui.section name="Profile">
+        <ui.element id="name" type="textbox" label="Display Name"
+          value={user.name} action="PUT /api/profile">
+          <input value={user.name} onChange={handleChange} />
+        </ui.element>
+        <ui.element id="save" type="button" label="Save Changes"
+          action="PUT /api/profile → toast 'Saved!'">
+          <button onClick={handleSave}>Save Changes</button>
+        </ui.element>
+      </ui.section>
+    </ui.page>
+  )
+}
+```
+
+In production, `<ui.*>` wrappers render nothing extra — zero overhead. They only activate when Surfaice is enabled.
+
+### 3. Enable the Middleware
+
+```ts
+// next.config.ts
+import { withSurfaice } from '@surfaice/next'
+
+export default withSurfaice({
+  enabled: true,          // master toggle
+  mode: 'query',          // /settings?surfaice=true → markdown
+})
+```
+
+### 4. Try It
+
+```bash
+# Human view (normal)
+curl https://myapp.com/settings
+# → HTML page
+
+# Agent view (markdown)
+curl https://myapp.com/settings?surfaice=true
+# → Live .surfaice.md with real data
+```
+
+### 5. Add CI Protection
+
+```bash
+# Export static manifests
+surfaice export
+
+# Check for drift
 surfaice check
 
 # See what changed
 surfaice diff
 ```
 
-## Two Modes
+## The Toggle
 
-**External Crawler** — point at any URL, AI generates the `.surfaice.md`:
-```bash
-surfaice init https://myapp.com/settings
-# → pages/settings.surfaice.md generated
+Surfaice can be turned on/off at any level:
+
+```ts
+withSurfaice({
+  enabled: process.env.SURFAICE_ENABLED === 'true',
+
+  // Access control
+  mode: 'query',          // ?surfaice=true
+  // mode: 'header',      // Accept: text/surfaice
+  // mode: 'route',       // /surfaice/settings
+
+  // Optional: restrict to authenticated agents only
+  // auth: (req) => req.headers['x-agent-key'] === process.env.AGENT_KEY,
+})
 ```
 
-**Framework Plugin** — annotate your components, manifest auto-generates from code:
-```tsx
-import { ui } from '@surfaice/react'
+Turn it off entirely in production. Enable it for staging. Restrict it to specific agents. Your call.
 
-<ui.page route="/settings" states={['auth-required']}>
-  <ui.section name="Profile">
-    <ui.element id="name" type="textbox" label="Display Name">
-      <input value={user.name} onChange={handleChange} />
-    </ui.element>
-  </ui.section>
-</ui.page>
-```
-
-## Web Discovery
-
-Sites can publish their UI manifest for agents to discover:
+## Three Consumers, One Source
 
 ```
-/.well-known/surfaice.md
+                @surfaice/react (annotations in your code)
+                        │
+            ┌───────────┼───────────┐
+            │           │           │
+            ▼           ▼           ▼
+       🤖 Agents    ✅ CI/CD    👀 Humans
+       Live markdown  Drift       PR diffs
+       with real data detection   readable UI changes
 ```
 
-Or via HTML meta tag:
-```html
-<meta name="surfaice" href="/surfaice.md">
-```
+**Agents** hit the runtime endpoint and understand your UI in ~200 tokens — no screenshots, no DOM scraping, no guessing.
+
+**CI** exports static manifests at build time and diffs against the committed version — any UI regression fails the build.
+
+**Humans** review `.surfaice.md` changes in PRs like they review code — structural, clear, meaningful diffs.
 
 ## Packages
 
 | Package | Description | Status |
 |---------|-------------|--------|
+| `@surfaice/react` | Annotation components + runtime data collection | 🚧 In progress |
+| `@surfaice/next` | Next.js middleware, dev overlay, build export | 🚧 In progress |
 | `@surfaice/format` | `.surfaice.md` parser and serializer | 🚧 In progress |
-| `@surfaice/crawler` | Playwright-based UI snapshot engine | 🚧 In progress |
-| `@surfaice/differ` | Structural diff engine | 🚧 In progress |
-| `@surfaice/cli` | CLI tool (`init`, `check`, `diff`) | 🚧 In progress |
-| `@surfaice/react` | React annotation components | 📋 Planned |
-| `@surfaice/next` | Next.js dev overlay + build export | 📋 Planned |
+| `@surfaice/differ` | Structural diff engine | 📋 Planned |
+| `@surfaice/cli` | CLI tool (`export`, `check`, `diff`) | 📋 Planned |
 | `@surfaice/action` | GitHub Action for CI | 📋 Planned |
 
 ## Format Specification
 
-See [spec/](./spec/) for the full `.surfaice.md` format specification.
+See [spec/FORMAT.md](./spec/FORMAT.md) for the full `.surfaice.md` format spec.
+
+## Why "Surfaice"?
+
+**Surface** (what users interact with) + **AI** (who else consumes it) = **Surfaice**.
+
+The web has standards for everything machines need to know — except what the UI can do:
+
+| Standard | Purpose | For |
+|----------|---------|-----|
+| `robots.txt` | What bots can crawl | Search crawlers |
+| `sitemap.xml` | What pages exist | Search engines |
+| `llms.txt` | What the site is about | LLMs |
+| **`surfaice.md`** | **What the UI can do** | **AI agents** |
 
 ## Contributing
 
@@ -117,8 +209,8 @@ We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guideline
 
 ## License
 
-MIT — free to use, modify, and distribute. We want this to become a community standard.
+MIT — free to use, modify, and distribute.
 
 ---
 
-*Built by [surfaiceai](https://github.com/surfaiceai)*
+*Built by [surfaiceai](https://github.com/surfaiceai) — making the web's interactive surface readable by machines.*

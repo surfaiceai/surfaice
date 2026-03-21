@@ -55,7 +55,7 @@ This single block serves three consumers:
 **In (v1):**
 - `Surfaice` format spec — the markdown-like `.surfaice.md` schema (open standard, MIT)
 - CLI tool: `surfaice` with `init`, `check`, `diff` commands
-  - `init <url>`: crawl a live page, generate `.surfaice.md` from accessibility tree + AI
+  - `export: generate .surfaice.md from framework annotations
   - `check`: verify real UI matches the manifest (pass/fail per element)
   - `diff`: show what changed between manifest and reality (new, missing, changed)
 - GitHub Action: `surfaice-action` — runs `check` in CI, fails PR on drift
@@ -85,10 +85,9 @@ This single block serves three consumers:
 - [ ] Supports: elements (with id, type, label), states (auth-required, loading, empty), actions (navigate, API call, modal, toast), dynamic values (`{user.name}`)
 - [ ] Has a versioned spec (`<!-- surfaice v1 -->` frontmatter or header)
 - [ ] Token-efficient: a full page description should be < 500 tokens for typical pages
-- [ ] Human-writable: a developer can write it by hand without a crawler
 
 ### CLI — `init`
-- [ ] `surfaice init <url>` crawls the URL using Playwright accessibility tree
+- [ ] `surfaice export: generate .surfaice.md from framework annotations
 - [ ] AI analyzes the tree and generates a `.surfaice.md` file
 - [ ] Output is clean, human-readable, editable
 - [ ] Completes in < 90 seconds for a typical page
