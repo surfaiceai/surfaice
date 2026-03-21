@@ -17,7 +17,7 @@ Vibe coding (AI-assisted development) makes it easy to build new features — an
 
 - **AI agents** burn thousands of tokens on screenshots and DOM trees to understand a page that could be described in 200 tokens
 - **Developers** have no lightweight way to document "what this UI is" that stays in sync with reality
-- **CI pipelines** can't catch UI regressions without expensive, brittle test scripts
+- **UI changes are invisible in PRs** — you can't review a UI change by reading a React diff
 
 There's no standard for telling machines what your UI can do.
 
@@ -88,7 +88,7 @@ function SettingsPage({ user }) {
           <input value={user.name} onChange={handleChange} />
         </ui.element>
         <ui.element id="save" type="button" label="Save Changes"
-          action="PUT /api/profile → toast 'Saved!'">
+          action="PUT /api/profile" result="toast 'Saved!'"
           <button onClick={handleSave}>Save Changes</button>
         </ui.element>
       </ui.section>
@@ -138,23 +138,16 @@ surfaice diff
 
 ## The Toggle
 
-Surfaice can be turned on/off at any level:
+Surfaice can be turned on/off and access-controlled:
 
 ```ts
 withSurfaice({
   enabled: process.env.SURFAICE_ENABLED === 'true',
-
-  // Access control
-  mode: 'query',          // ?surfaice=true
-  // mode: 'header',      // Accept: text/surfaice
-  // mode: 'route',       // /surfaice/settings
-
-  // Optional: restrict to authenticated agents only
-  // auth: (req) => req.headers['x-agent-key'] === process.env.AGENT_KEY,
+  mode: 'query',  // ?surfaice=true | 'header' | 'route'
 })
 ```
 
-Turn it off entirely in production. Enable it for staging. Restrict it to specific agents. Your call.
+See [docs](./docs/) for advanced configuration (auth, route restrictions, per-page overrides).
 
 ## Three Consumers, One Source
 
