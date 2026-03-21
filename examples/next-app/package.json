@@ -1,0 +1,25 @@
+{
+  "name": "surfaice-example-next-app",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Example Next.js app with Surfaice annotations",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@surfaice/format": "workspace:*",
+    "@surfaice/react": "workspace:*",
+    "@surfaice/next": "workspace:*",
+    "next": "^15.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^5.5.0"
+  }
+}
