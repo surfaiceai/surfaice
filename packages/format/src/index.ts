@@ -12,3 +12,4 @@ export type {
 
 export { parse } from './parser'
 export { serialize } from './serializer'
+export { validate } from './validator'
