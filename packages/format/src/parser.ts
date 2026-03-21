@@ -27,7 +27,7 @@ export function parse(input: string): SurfaicePage {
   const mdast = processor.parse(input) as Root
 
   // Extract frontmatter
-  const frontmatterNode = mdast.children.find(n => n.type === 'yaml') as { type: 'yaml'; value: string } | undefined
+  const frontmatterNode = mdast.children.find(n => n.type === 'yaml') as ({ type: 'yaml'; value: string }) | undefined
   const frontmatter = frontmatterNode ? parseYaml(frontmatterNode.value) as Record<string, unknown> : {}
 
   const version = String(frontmatter['surfaice'] ?? 'v1')
@@ -106,17 +106,17 @@ function parseCapabilities(raw: unknown): Capability[] | undefined {
 
 function extractText(node: Heading): string {
   return node.children
-    .filter(c => c.type === 'text')
-    .map(c => (c as Text).value)
+    .filter((c): c is Text => c.type === 'text')
+    .map(c => c.value)
     .join('')
 }
 
 function extractListItemText(item: ListItem): string {
-  const para = item.children.find(c => c.type === 'paragraph') as Paragraph | undefined
+  const para = item.children.find((c): c is Paragraph => c.type === 'paragraph')
   if (!para) return ''
   return para.children
-    .filter(c => c.type === 'text')
-    .map(c => (c as Text).value)
+    .filter((c): c is Text => c.type === 'text')
+    .map(c => c.value)
     .join('')
 }
 
@@ -130,7 +130,7 @@ function parseElementList(list: List): Element[] {
     if (!el) continue
 
     // Check for nested list (reveals)
-    const nestedList = listItem.children.find(c => c.type === 'list') as List | undefined
+    const nestedList = listItem.children.find((c): c is List => c.type === 'list')
     if (nestedList) {
       el.reveals = parseElementList(nestedList)
     }
