@@ -16,7 +16,18 @@ importers:
 
   packages/cli: {}
 
-  packages/differ: {}
+  packages/differ:
+    dependencies:
+      '@surfaice/format':
+        specifier: workspace:*
+        version: link:../format
+    devDependencies:
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.0.0
+        version: 2.1.9(jsdom@25.0.1)
 
   packages/format:
     dependencies:
