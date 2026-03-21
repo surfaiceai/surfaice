@@ -11,3 +11,4 @@ export type {
 } from './types'
 
 export { parse } from './parser'
+export { serialize } from './serializer'
