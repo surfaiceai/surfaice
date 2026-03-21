@@ -2,7 +2,7 @@
 
 ## Overview
 
-A `.ui.md` file is a valid Markdown document that structurally describes a web page's interactive surface. It is designed to be:
+A `.surfaice.md` file is a valid Markdown document that structurally describes a web page's interactive surface. It is designed to be:
 
 - **Human-readable** — renders in GitHub, VSCode, any markdown viewer
 - **Machine-parseable** — strict enough for deterministic parsing
@@ -140,10 +140,10 @@ One file per route, with an index:
 
 ```
 surfaice/
-├── index.ui.md          # App-level index
-├── login.ui.md          # /login
-├── dashboard.ui.md      # /dashboard
-└── settings.ui.md       # /settings
+├── index.surfaice.md          # App-level index
+├── login.surfaice.md          # /login
+├── dashboard.surfaice.md      # /dashboard
+└── settings.surfaice.md       # /settings
 ```
 
 ### Index File
@@ -157,9 +157,9 @@ baseUrl: https://myapp.com
 
 # MyApp — UI Map
 
-- [/login](login.ui.md)
-- [/dashboard](dashboard.ui.md) [auth-required]
-- [/settings](settings.ui.md) [auth-required]
+- [/login](login.surfaice.md)
+- [/dashboard](dashboard.surfaice.md) [auth-required]
+- [/settings](settings.surfaice.md) [auth-required]
 ```
 
 ## Web Discovery
