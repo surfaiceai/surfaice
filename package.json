@@ -1,0 +1,17 @@
+{
+  "name": "surfaice",
+  "private": true,
+  "description": "Describe your UI once. Agents navigate it. CI verifies it. Humans review it.",
+  "repository": "https://github.com/surfaiceai/surfaice",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "dev": "turbo run dev"
+  }
+}

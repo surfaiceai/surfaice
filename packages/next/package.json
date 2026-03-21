@@ -1,0 +1,18 @@
+{
+  "name": "@surfaice/next",
+  "version": "0.0.1",
+  "description": "Surfaice next package",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "dev": "tsc --watch"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/surfaiceai/surfaice",
+    "directory": "packages/next"
+  }
+}
