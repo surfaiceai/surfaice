@@ -11,6 +11,8 @@ llms.txt       → what the site is about
 surfaice.md    → what the UI can do
 ```
 
+> **Who is this for?** Developers building with AI coding tools (Cursor, Windsurf, Copilot) who need to keep their UI quality from degrading as features pile up.
+
 ## The Problem
 
 Vibe coding (AI-assisted development) makes it easy to build new features — and trivially easy to break existing ones.
