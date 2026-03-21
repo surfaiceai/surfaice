@@ -1,11 +1,19 @@
 {
   "name": "@surfaice/differ",
   "version": "0.0.1",
-  "description": "Surfaice differ package",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Structural diff engine for Surfaice pages",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "build": "tsc",
+    "test": "vitest run",
     "dev": "tsc --watch"
   },
   "license": "MIT",
@@ -13,5 +21,12 @@
     "type": "git",
     "url": "https://github.com/surfaiceai/surfaice",
     "directory": "packages/differ"
+  },
+  "dependencies": {
+    "@surfaice/format": "workspace:*"
+  },
+  "devDependencies": {
+    "vitest": "^2.0.0",
+    "typescript": "^5.5.0"
   }
 }
