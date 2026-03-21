@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, createContext } from 'react'
-import { SurfaiceContext } from './context'
+import { SurfaiceContext } from './context.js'
 import type { Element, ElementType, Capability } from '@surfaice/format'
 
 // Inner context to pass section name down to ui.element

@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { SurfaiceContext } from './context'
+import { SurfaiceContext } from './context.js'
 import type { SurfaicePage } from '@surfaice/format'
 
 /**

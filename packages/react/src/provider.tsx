@@ -1,6 +1,6 @@
 import React, { useRef, useState, useCallback } from 'react'
-import { SurfaiceContext } from './context'
-import { SurfaiceRegistry } from './registry'
+import { SurfaiceContext } from './context.js'
+import { SurfaiceRegistry } from './registry.js'
 import type { SurfaicePage, Section, Element } from '@surfaice/format'
 
 export interface SurfaiceProviderProps {

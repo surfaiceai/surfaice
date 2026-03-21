@@ -11,7 +11,7 @@ import type {
   Capability,
   PageState,
   StateChange,
-} from './types'
+} from './types.js'
 
 // Regex to match element lines: - [id] type "Label" (attrs) → ...
 const ELEMENT_LINE_RE = /^-\s+\[(\w[\w-]*)\]\s+(\w[\w-]*)\s+"([^"]+)"(?:\s+\(([^)]+)\))?(.*)?$/

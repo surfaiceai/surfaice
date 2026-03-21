@@ -8,8 +8,8 @@ export type {
   PageState,
   StateChange,
   ValidationError,
-} from './types'
+} from './types.js'
 
-export { parse } from './parser'
-export { serialize } from './serializer'
-export { validate } from './validator'
+export { parse } from './parser.js'
+export { serialize } from './serializer.js'
+export { validate } from './validator.js'
