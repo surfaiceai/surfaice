@@ -1,50 +1,69 @@
-import type { SurfaicePage, Section, Element, Capability } from '@surfaice/format'
+import type { SurfaicePage, Section, Element } from '@surfaice/format'
+
+interface PendingElement {
+  sectionName: string
+  element: Element
+}
 
 /**
  * SurfaiceRegistry collects UI annotations at render time.
- * Components call register* methods during their useEffect hooks.
- * The middleware/dev-tools call toSurfaicePage() to extract the snapshot.
+ *
+ * React fires useEffect bottom-up (children before parents), so registration
+ * order is: elements → sections → page. We buffer elements with their target
+ * section name and reconcile when producing the final AST.
  */
 export class SurfaiceRegistry {
-  private _page: Partial<SurfaicePage> | null = null
-  private _sections: Section[] = []
-  private _currentSectionIndex: number = -1
+  private _meta: Partial<SurfaicePage> | null = null
+  private _sectionNames: string[] = []
+  private _pendingElements: PendingElement[] = []
+  // Track which section name the most recently registered section belongs to,
+  // so elements registered before their section still land correctly.
+  private _currentSectionName: string | null = null
 
   setPage(page: Partial<SurfaicePage>): void {
-    this._page = { ...page }
-    this._sections = []
-    this._currentSectionIndex = -1
+    this._meta = { ...page }
   }
 
   addSection(section: Partial<Section>): void {
-    const newSection: Section = {
-      name: section.name ?? 'Unnamed Section',
-      elements: [],
+    const name = section.name ?? 'Unnamed Section'
+    if (!this._sectionNames.includes(name)) {
+      this._sectionNames.push(name)
     }
-    this._sections.push(newSection)
-    this._currentSectionIndex = this._sections.length - 1
+    this._currentSectionName = name
   }
 
-  addElement(element: Partial<Element>): void {
-    if (this._currentSectionIndex < 0) return
+  /** Register an element, tagged to the current section name */
+  addElement(element: Partial<Element>, sectionName?: string): void {
+    const target = sectionName ?? this._currentSectionName
+    if (!target) return
+
     const el: Element = {
       id: element.id ?? '',
       type: element.type ?? 'text',
       label: element.label ?? '',
       ...element,
     }
-    this._sections[this._currentSectionIndex].elements.push(el)
+    this._pendingElements.push({ sectionName: target, element: el })
   }
 
   toSurfaicePage(): SurfaicePage | null {
-    if (!this._page) return null
+    if (!this._meta) return null
+
+    // Build sections, attaching elements
+    const sections: Section[] = this._sectionNames.map(name => ({
+      name,
+      elements: this._pendingElements
+        .filter(p => p.sectionName === name)
+        .map(p => p.element),
+    }))
+
     return {
-      version: this._page.version ?? 'v1',
-      route: this._page.route ?? '/',
-      ...(this._page.name !== undefined && { name: this._page.name }),
-      ...(this._page.states !== undefined && { states: this._page.states }),
-      ...(this._page.capabilities !== undefined && { capabilities: this._page.capabilities }),
-      sections: [...this._sections],
+      version: this._meta.version ?? 'v1',
+      route: this._meta.route ?? '/',
+      ...(this._meta.name !== undefined && { name: this._meta.name }),
+      ...(this._meta.states !== undefined && { states: this._meta.states }),
+      ...(this._meta.capabilities !== undefined && { capabilities: this._meta.capabilities }),
+      sections,
     }
   }
 
@@ -53,8 +72,9 @@ export class SurfaiceRegistry {
   }
 
   reset(): void {
-    this._page = null
-    this._sections = []
-    this._currentSectionIndex = -1
+    this._meta = null
+    this._sectionNames = []
+    this._pendingElements = []
+    this._currentSectionName = null
   }
 }

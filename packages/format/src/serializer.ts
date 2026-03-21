@@ -1,4 +1,4 @@
-import type { SurfaicePage, Section, Element } from './types'
+import type { SurfaicePage, Section, Element } from './types.js'
 
 /**
  * Serialize a SurfaicePage AST back to a .surfaice.md string.
