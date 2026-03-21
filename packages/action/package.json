@@ -1,17 +1,42 @@
 {
   "name": "@surfaice/action",
   "version": "0.0.1",
-  "description": "Surfaice action package",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "GitHub Action for detecting UI drift with Surfaice",
+  "type": "module",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "test": "vitest run",
+    "dev": "tsc --watch",
+    "prepublishOnly": "pnpm build"
+  },
+  "files": [
+    "dist",
+    "action.yml",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/surfaiceai/surfaice",
     "directory": "packages/action"
+  },
+  "dependencies": {
+    "@surfaice/format": "workspace:*",
+    "@surfaice/differ": "workspace:*"
+  },
+  "devDependencies": {
+    "vitest": "^2.0.0",
+    "typescript": "^5.5.0",
+    "@types/node": "^22.0.0"
   }
 }
