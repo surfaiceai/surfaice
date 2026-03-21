@@ -1,0 +1,32 @@
+name: 'Surfaice UI Drift Check'
+description: 'Detect UI drift by comparing committed .surfaice.md files against a live app'
+author: 'surfaiceai'
+
+inputs:
+  base-url:
+    description: 'Base URL of the running app (e.g. https://preview.myapp.com)'
+    required: true
+  surfaice-dir:
+    description: 'Directory containing committed .surfaice.md files'
+    required: false
+    default: 'surfaice/'
+  fail-on-drift:
+    description: 'Fail the action if drift is detected'
+    required: false
+    default: 'true'
+  output-format:
+    description: 'Output format: "text" or "json"'
+    required: false
+    default: 'text'
+
+outputs:
+  drift-detected:
+    description: 'Whether UI drift was detected ("true" or "false")'
+  drift-summary:
+    description: 'Human-readable summary of drift (e.g. "2 added, 1 changed")'
+  diff-json:
+    description: 'JSON-encoded diff results array'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

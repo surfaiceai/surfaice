@@ -12,7 +12,24 @@ importers:
         specifier: ^2.0.0
         version: 2.8.20
 
-  packages/action: {}
+  packages/action:
+    dependencies:
+      '@surfaice/differ':
+        specifier: workspace:*
+        version: link:../differ
+      '@surfaice/format':
+        specifier: workspace:*
+        version: link:../format
+    devDependencies:
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.15
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.0.0
+        version: 2.1.9(@types/node@22.19.15)(jsdom@25.0.1)
 
   packages/cli:
     dependencies:
