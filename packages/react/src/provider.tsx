@@ -1,6 +1,6 @@
 import React, { useRef, useState, useCallback } from 'react'
-import { SurfaiceContext } from './context'
-import { SurfaiceRegistry } from './registry'
+import { SurfaiceContext } from './context.js'
+import { SurfaiceRegistry } from './registry.js'
 import type { SurfaicePage, Section, Element } from '@surfaice/format'
 
 export interface SurfaiceProviderProps {
@@ -9,10 +9,6 @@ export interface SurfaiceProviderProps {
   children: React.ReactNode
 }
 
-/**
- * SurfaiceProvider — wrap your app (or a page) with this to enable annotation collection.
- * When disabled (default), all annotation components are pure passthroughs with zero overhead.
- */
 export function SurfaiceProvider({ enabled = false, children }: SurfaiceProviderProps) {
   const registryRef = useRef<SurfaiceRegistry>(new SurfaiceRegistry())
   const [page, setPage] = useState<SurfaicePage | null>(null)
@@ -31,13 +27,19 @@ export function SurfaiceProvider({ enabled = false, children }: SurfaiceProvider
     syncPage()
   }, [syncPage])
 
-  const registerElement = useCallback((e: Partial<Element>) => {
-    registryRef.current.addElement(e)
+  const registerElement = useCallback((e: Partial<Element>, sectionName?: string) => {
+    registryRef.current.addElement(e, sectionName)
     syncPage()
   }, [syncPage])
 
   return (
-    <SurfaiceContext.Provider value={{ enabled, page: enabled ? page : null, registerPage, registerSection, registerElement }}>
+    <SurfaiceContext.Provider value={{
+      enabled,
+      page: enabled ? page : null,
+      registerPage,
+      registerSection,
+      registerElement,
+    }}>
       {children}
     </SurfaiceContext.Provider>
   )

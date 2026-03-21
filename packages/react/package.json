@@ -2,7 +2,7 @@
   "name": "@surfaice/react",
   "version": "0.0.1",
   "description": "React annotations for Surfaice \u2014 describe your UI once, agents navigate it",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
@@ -33,5 +33,12 @@
     "@vitejs/plugin-react": "^4.0.0",
     "jsdom": "^25.0.0",
     "@testing-library/jest-dom": "^6.0.0"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
   }
 }

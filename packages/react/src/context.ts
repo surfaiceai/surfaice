@@ -6,7 +6,7 @@ export interface SurfaiceContextValue {
   page: SurfaicePage | null
   registerPage: (page: Partial<SurfaicePage>) => void
   registerSection: (section: Partial<Section>) => void
-  registerElement: (element: Partial<Element>) => void
+  registerElement: (element: Partial<Element>, sectionName?: string) => void
 }
 
 export const SurfaiceContext = createContext<SurfaiceContextValue>({

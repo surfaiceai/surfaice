@@ -1,4 +1,4 @@
-import type { SurfaicePage, Element, ValidationError } from './types'
+import type { SurfaicePage, Element, ValidationError } from './types.js'
 
 const VALID_ELEMENT_TYPES = new Set([
   'button', 'textbox', 'textarea', 'link', 'select', 'checkbox',
