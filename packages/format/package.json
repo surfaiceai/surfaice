@@ -14,5 +14,15 @@
     "type": "git",
     "url": "https://github.com/surfaiceai/surfaice",
     "directory": "packages/format"
+  },
+  "devDependencies": {
+    "vitest": "^2.0.0",
+    "typescript": "^5.5.0"
+  },
+  "dependencies": {
+    "unified": "^11.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-frontmatter": "^5.0.0",
+    "yaml": "^2.4.0"
   }
 }
