@@ -9,3 +9,5 @@ export type {
   StateChange,
   ValidationError,
 } from './types'
+
+export { parse } from './parser'
