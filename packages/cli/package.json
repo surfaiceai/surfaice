@@ -1,11 +1,21 @@
 {
   "name": "@surfaice/cli",
   "version": "0.0.1",
-  "description": "Surfaice cli package",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Surfaice CLI — export, check, and diff UI manifests",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "surfaice": "./dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "build": "tsc",
+    "test": "vitest run",
     "dev": "tsc --watch"
   },
   "license": "MIT",
@@ -13,5 +23,15 @@
     "type": "git",
     "url": "https://github.com/surfaiceai/surfaice",
     "directory": "packages/cli"
+  },
+  "dependencies": {
+    "@surfaice/differ": "workspace:*",
+    "@surfaice/format": "workspace:*",
+    "commander": "^12.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
   }
 }
