@@ -1,4 +1,4 @@
-# Spec: UIManifest — Structural UI Description Standard
+# Spec: Surfaice — Structural UI Description Standard
 
 **v2 — Major pivot from test-script config to living UI description format**
 
@@ -20,10 +20,10 @@ Existing "solutions" are wrong-shaped:
 
 ## Goal
 
-Create `UIManifest` — an open MIT-licensed markdown-like format for describing web UI structure. A `.ui.md` file per page (or app) that says: *here's what exists, what it does, and what it connects to.*
+Create `Surfaice` — an open MIT-licensed markdown-like format for describing web UI structure. A `.surfaice.md` file per page (or app) that says: *here's what exists, what it does, and what it connects to.*
 
 **Success looks like:**
-- Devs write (or generate) a `.ui.md` for their app — it lives in the repo, gets reviewed in PRs
+- Devs write (or generate) a `.surfaice.md` for their app — it lives in the repo, gets reviewed in PRs
 - Agents read it instead of screenshotting — 10x fewer tokens, no visual parsing
 - CI verifies the real UI still matches the description — drift = failure
 - The format becomes a community standard others build on
@@ -53,14 +53,14 @@ This single block serves three consumers:
 ## Scope
 
 **In (v1):**
-- `UIManifest` format spec — the markdown-like `.ui.md` schema (open standard, MIT)
-- CLI tool: `uimanifest` with `init`, `check`, `diff` commands
-  - `init <url>`: crawl a live page, generate `.ui.md` from accessibility tree + AI
+- `Surfaice` format spec — the markdown-like `.surfaice.md` schema (open standard, MIT)
+- CLI tool: `surfaice` with `init`, `check`, `diff` commands
+  - `init <url>`: crawl a live page, generate `.surfaice.md` from accessibility tree + AI
   - `check`: verify real UI matches the manifest (pass/fail per element)
   - `diff`: show what changed between manifest and reality (new, missing, changed)
-- GitHub Action: `uimanifest-action` — runs `check` in CI, fails PR on drift
-- Discovery: `/.well-known/ui-manifest.md` and `<meta name="ui-manifest">` support
-- Published format spec at `uimanifest.dev` (or GitHub Pages for v1)
+- GitHub Action: `surfaice-action` — runs `check` in CI, fails PR on drift
+- Discovery: `/.well-known/surfaice.md` and `<meta name="surfaice">` support
+- Published format spec at `surfaice.dev` (or GitHub Pages for v1)
 
 **Out (v1):**
 - Mobile (iOS/Android) — v2
@@ -71,65 +71,65 @@ This single block serves three consumers:
 
 ## User Stories
 
-- As a vibe coder, I want to run `uimanifest init https://myapp.com` so I get a human-readable description of my UI that I can commit and review
+- As a vibe coder, I want to run `surfaice init https://myapp.com` so I get a human-readable description of my UI that I can commit and review
 - As a developer, I want CI to fail when my UI drifts from its description, so I know when a vibe-coded change silently broke something
-- As an AI agent, I want to read `/.well-known/ui-manifest.md` so I understand what's on each page without taking a screenshot
-- As a team member, I want to review UI changes in a PR as a diff of the `.ui.md` file, not a wall of HTML
+- As an AI agent, I want to read `/.well-known/surfaice.md` so I understand what's on each page without taking a screenshot
+- As a team member, I want to review UI changes in a PR as a diff of the `.surfaice.md` file, not a wall of HTML
 - As an open-source contributor, I want to build a Cypress/Puppeteer sync-checker on top of the format because it's a standard, not a tool
 
 ## Acceptance Criteria
 
 ### Format
-- [ ] `.ui.md` is valid Markdown — renders readably in GitHub, VSCode, any markdown viewer
+- [ ] `.surfaice.md` is valid Markdown — renders readably in GitHub, VSCode, any markdown viewer
 - [ ] Each file describes one route/page
 - [ ] Supports: elements (with id, type, label), states (auth-required, loading, empty), actions (navigate, API call, modal, toast), dynamic values (`{user.name}`)
-- [ ] Has a versioned spec (`<!-- uimanifest v1 -->` frontmatter or header)
+- [ ] Has a versioned spec (`<!-- surfaice v1 -->` frontmatter or header)
 - [ ] Token-efficient: a full page description should be < 500 tokens for typical pages
 - [ ] Human-writable: a developer can write it by hand without a crawler
 
 ### CLI — `init`
-- [ ] `uimanifest init <url>` crawls the URL using Playwright accessibility tree
-- [ ] AI analyzes the tree and generates a `.ui.md` file
+- [ ] `surfaice init <url>` crawls the URL using Playwright accessibility tree
+- [ ] AI analyzes the tree and generates a `.surfaice.md` file
 - [ ] Output is clean, human-readable, editable
 - [ ] Completes in < 90 seconds for a typical page
 - [ ] Handles auth-walled pages via config (`--cookie`, `--env-auth`)
 
 ### CLI — `check`
-- [ ] `uimanifest check` reads all `.ui.md` files in the project
+- [ ] `surfaice check` reads all `.surfaice.md` files in the project
 - [ ] Opens a real browser (Playwright), visits each page
 - [ ] Verifies each declared element exists and matches its description
 - [ ] Reports pass/fail per element with clear error messages
 - [ ] Exit code 0 = all match, non-zero = drift detected
 
 ### CLI — `diff`
-- [ ] `uimanifest diff` shows a structured diff: new elements (in UI, not in manifest), missing elements (in manifest, not in UI), changed elements (label/type/action changed)
+- [ ] `surfaice diff` shows a structured diff: new elements (in UI, not in manifest), missing elements (in manifest, not in UI), changed elements (label/type/action changed)
 - [ ] Output is human-readable and machine-parseable (--json flag)
 
 ### GitHub Action
-- [ ] `uses: uimanifest/action@v1` with `url:` and optional `manifest-path:` inputs
+- [ ] `uses: surfaice/action@v1` with `url:` and optional `manifest-path:` inputs
 - [ ] Runs `check` against provided URL
 - [ ] Reports per-page, per-element results as PR check annotations
 - [ ] Configurable: `fail-on: drift | missing-only | never`
 
 ### Discovery
-- [ ] `uimanifest init` checks `/.well-known/ui-manifest.md` before crawling
-- [ ] Sites can declare per-page manifests via `<meta name="ui-manifest" href="/ui.md">`
-- [ ] `uimanifest fetch <url>` retrieves and displays a site's published manifest
+- [ ] `surfaice init` checks `/.well-known/surfaice.md` before crawling
+- [ ] Sites can declare per-page manifests via `<meta name="surfaice" href="/ui.md">`
+- [ ] `surfaice fetch <url>` retrieves and displays a site's published manifest
 
 ## UI/UX Design
 
 ### CLI Experience
 
-#### `uimanifest init`
+#### `surfaice init`
 ```
-$ uimanifest init https://myapp.com/settings
+$ surfaice init https://myapp.com/settings
 
 🔍 Crawling /settings via accessibility tree...
    Found 14 interactive elements across 3 sections
 
 🧠 Generating UI description...
 
-✅ Written to pages/settings.ui.md (38 lines, ~180 tokens)
+✅ Written to pages/settings.surfaice.md (38 lines, ~180 tokens)
 
 Preview:
   # /settings [auth-required]
@@ -138,14 +138,14 @@ Preview:
   - [save] button "Save Changes" → PUT /api/profile
   ...
 
-Next: uimanifest check    # verify it matches reality
+Next: surfaice check    # verify it matches reality
 ```
 
-#### `uimanifest check`
+#### `surfaice check`
 ```
-$ uimanifest check
+$ surfaice check
 
-Checking UIManifest against https://myapp.com
+Checking Surfaice against https://myapp.com
 
   /login            ✅  8/8 elements match
   /dashboard        ✅  12/12 elements match
@@ -161,9 +161,9 @@ Checking UIManifest against https://myapp.com
 Exit code: 1
 ```
 
-#### `uimanifest diff`
+#### `surfaice diff`
 ```
-$ uimanifest diff
+$ surfaice diff
 
 /settings — 3 changes since last snapshot:
   + [theme] select "Theme"                    NEW (not in manifest)
@@ -171,9 +171,9 @@ $ uimanifest diff
   - [delete] button "Delete Account"          MISSING
 ```
 
-### The `.ui.md` format (human-readable output)
+### The `.surfaice.md` format (human-readable output)
 ```markdown
-<!-- uimanifest v1 -->
+<!-- surfaice v1 -->
 # /login
 
 ## Header
@@ -193,17 +193,17 @@ $ uimanifest diff
 ```
 
 ### Empty State
-- `uimanifest init` on a static page with no interactive elements: generates description-only manifest noting "read-only page, no interactive elements"
+- `surfaice init` on a static page with no interactive elements: generates description-only manifest noting "read-only page, no interactive elements"
 
 ### Error States
 - `check` fails to reach URL: `❌ Cannot reach https://myapp.com/settings — is the app running?`
 - Element present but wrong type: `❌ [save] — expected button, found div (not keyboard accessible)`
-- Auth-walled page: `⚠️ /dashboard returned 401 — run with --auth-cookie or configure auth in uimanifest.config.yaml`
+- Auth-walled page: `⚠️ /dashboard returned 401 — run with --auth-cookie or configure auth in surfaice.config.yaml`
 
 ## Open Questions
 
-1. **Format name** — `.ui.md` vs `ui-manifest.md` vs `UISPEC.md`? Needs to be obvious and not conflict with existing conventions.
-2. **Multi-page projects** — one file per page (`pages/login.ui.md`) or one file for the whole app with `# /route` sections?
+1. **Format name** — `.surfaice.md` vs `surfaice.md` vs `UISPEC.md`? Needs to be obvious and not conflict with existing conventions.
+2. **Multi-page projects** — one file per page (`pages/login.surfaice.md`) or one file for the whole app with `# /route` sections?
 3. **Dynamic values** — `{user.name}` syntax for runtime values — do we specify a full template syntax or keep it freeform?
 4. **Auth config** — how does `init`/`check` handle pages behind login? Config file? CLI flags? Both?
-5. **Project name** — still working with `UIManifest`. to be confirmed.
+5. **Project name** — still working with `Surfaice`. to be confirmed.

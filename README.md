@@ -2,7 +2,7 @@
 
 **Describe your UI once. Agents navigate it. CI verifies it. Humans review it.**
 
-Surfaice is an open standard for describing web UI structure in a markdown-like format (`.ui.md`). It's like `sitemap.xml` for interactive capabilities — but instead of listing pages for search engines, it describes what your app can *do* for AI agents.
+Surfaice is an open standard for describing web UI structure in a markdown-like format (`.surfaice.md`). It's like `sitemap.xml` for interactive capabilities — but instead of listing pages for search engines, it describes what your app can *do* for AI agents.
 
 ```
 robots.txt     → what bots can crawl
@@ -21,7 +21,7 @@ Vibe coding (AI-assisted development) makes it easy to build new features — an
 
 ## The Solution
 
-A `.ui.md` file that describes your UI the way a wireframe describes a design — structurally, declaratively, readable by both humans and agents:
+A `.surfaice.md` file that describes your UI the way a wireframe describes a design — structurally, declaratively, readable by both humans and agents:
 
 ```markdown
 # /settings [auth-required]
@@ -63,10 +63,10 @@ surfaice diff
 
 ## Two Modes
 
-**External Crawler** — point at any URL, AI generates the `.ui.md`:
+**External Crawler** — point at any URL, AI generates the `.surfaice.md`:
 ```bash
 surfaice init https://myapp.com/settings
-# → pages/settings.ui.md generated
+# → pages/settings.surfaice.md generated
 ```
 
 **Framework Plugin** — annotate your components, manifest auto-generates from code:
@@ -99,7 +99,7 @@ Or via HTML meta tag:
 
 | Package | Description | Status |
 |---------|-------------|--------|
-| `@surfaice/format` | `.ui.md` parser and serializer | 🚧 In progress |
+| `@surfaice/format` | `.surfaice.md` parser and serializer | 🚧 In progress |
 | `@surfaice/crawler` | Playwright-based UI snapshot engine | 🚧 In progress |
 | `@surfaice/differ` | Structural diff engine | 🚧 In progress |
 | `@surfaice/cli` | CLI tool (`init`, `check`, `diff`) | 🚧 In progress |
@@ -109,7 +109,7 @@ Or via HTML meta tag:
 
 ## Format Specification
 
-See [spec/](./spec/) for the full `.ui.md` format specification.
+See [spec/](./spec/) for the full `.surfaice.md` format specification.
 
 ## Contributing
 
