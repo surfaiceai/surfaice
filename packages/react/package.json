@@ -1,11 +1,12 @@
 {
   "name": "@surfaice/react",
   "version": "0.0.1",
-  "description": "Surfaice react package",
+  "description": "React annotations for Surfaice \u2014 describe your UI once, agents navigate it",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "test": "vitest run",
     "dev": "tsc --watch"
   },
   "license": "MIT",
@@ -13,5 +14,24 @@
     "type": "git",
     "url": "https://github.com/surfaiceai/surfaice",
     "directory": "packages/react"
+  },
+  "dependencies": {
+    "@surfaice/format": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "vitest": "^2.0.0",
+    "typescript": "^5.5.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "jsdom": "^25.0.0",
+    "@testing-library/jest-dom": "^6.0.0"
   }
 }
