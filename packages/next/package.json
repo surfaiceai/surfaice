@@ -1,6 +1,6 @@
 {
   "name": "@surfaice/next",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Next.js middleware for Surfaice \u2014 Accept: text/surfaice runtime serving",
   "type": "module",
   "main": "./dist/index.js",
