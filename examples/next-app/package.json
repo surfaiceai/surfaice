@@ -4,9 +4,7 @@
   "private": true,
   "description": "Example Next.js app with Surfaice annotations",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "dev": "next dev"
   },
   "dependencies": {
     "@surfaice/format": "workspace:*",
