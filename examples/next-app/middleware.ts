@@ -4,19 +4,19 @@ import { shouldHandleSurfaice, isRouteAllowed } from '@surfaice/next'
 
 export function middleware(req: NextRequest) {
   const accept = req.headers.get('accept') ?? ''
+  const pathname = req.nextUrl.pathname
 
   if (
     shouldHandleSurfaice(accept) &&
-    isRouteAllowed(req.nextUrl.pathname, {
+    isRouteAllowed(pathname, {
       exclude: ['/api', '/_next', '/favicon.ico'],
     })
   ) {
-    // Rewrite to the Surfaice API handler, passing the original route
-    const url = req.nextUrl.clone()
-    const originalPath = req.nextUrl.pathname
-    url.pathname = '/api/surfaice'
-    url.searchParams.set('route', originalPath)
-    return NextResponse.rewrite(url)
+    const routeParam = pathname.slice(1) || 'index'
+    // Use redirect so the API route receives proper query params
+    const apiUrl = new URL(`/api/surfaice`, req.nextUrl.origin)
+    apiUrl.searchParams.set('r', routeParam)
+    return NextResponse.redirect(apiUrl)
   }
 
   return NextResponse.next()

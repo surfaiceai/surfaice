@@ -3,8 +3,6 @@ import type { NextRequest } from 'next/server'
 import { serialize } from '@surfaice/format'
 import type { SurfaicePage } from '@surfaice/format'
 
-// Hardcoded page manifests — in a real app these would be generated
-// from your annotated components at build time by `surfaice export`
 const PAGE_MANIFESTS: Record<string, SurfaicePage> = {
   '/settings': {
     version: 'v1',
@@ -12,77 +10,33 @@ const PAGE_MANIFESTS: Record<string, SurfaicePage> = {
     name: 'Settings Page',
     states: ['auth-required'],
     capabilities: [
-      {
-        id: 'update-profile',
-        description: 'User updates their display name',
-        elements: ['name', 'save'],
-      },
+      { id: 'update-profile', description: 'User updates their display name', elements: ['name', 'save'] },
     ],
     sections: [
       {
         name: 'Profile',
         elements: [
-          {
-            id: 'name',
-            type: 'textbox',
-            label: 'Display Name',
-            current: '{user.name}',
-            accepts: 'string',
-            action: 'PUT /api/profile',
-          },
-          {
-            id: 'email',
-            type: 'textbox',
-            label: 'Email Address',
-            attributes: ['readonly'],
-            shows: '{user.email}',
-          },
-          {
-            id: 'save',
-            type: 'button',
-            label: 'Save Changes',
-            attributes: ['destructive'],
-            action: 'PUT /api/profile',
-            result: "toast 'Profile updated successfully'",
-          },
+          { id: 'name', type: 'textbox', label: 'Display Name', current: '{user.name}', accepts: 'string', action: 'PUT /api/profile' },
+          { id: 'email', type: 'textbox', label: 'Email Address', attributes: ['readonly'], shows: '{user.email}' },
+          { id: 'save', type: 'button', label: 'Save Changes', attributes: ['destructive'], action: 'PUT /api/profile', result: "toast 'Profile updated successfully'" },
         ],
       },
       {
         name: 'Notifications',
         elements: [
-          {
-            id: 'notify-email',
-            type: 'toggle',
-            label: 'Email Notifications',
-            current: '{user.notificationsEnabled}',
-            action: 'PUT /api/settings/notifications',
-          },
+          { id: 'notify-email', type: 'toggle', label: 'Email Notifications', current: '{user.notificationsEnabled}', action: 'PUT /api/settings/notifications' },
         ],
       },
       {
         name: 'Appearance',
         elements: [
-          {
-            id: 'theme',
-            type: 'select',
-            label: 'Theme',
-            current: '{user.theme}',
-            options: ['Light', 'Dark', 'System'],
-            action: 'PUT /api/settings/theme',
-          },
+          { id: 'theme', type: 'select', label: 'Theme', current: '{user.theme}', options: ['Light', 'Dark', 'System'], action: 'PUT /api/settings/theme' },
         ],
       },
       {
         name: 'Danger Zone',
         elements: [
-          {
-            id: 'delete-account',
-            type: 'button',
-            label: 'Delete Account',
-            attributes: ['destructive'],
-            action: 'DELETE /api/account',
-            result: "confirms: 'Are you sure? This action cannot be undone.'",
-          },
+          { id: 'delete-account', type: 'button', label: 'Delete Account', attributes: ['destructive'], action: 'DELETE /api/account', result: "confirms: 'Are you sure? This action cannot be undone.'" },
         ],
       },
     ],
@@ -117,7 +71,9 @@ const PAGE_MANIFESTS: Record<string, SurfaicePage> = {
 }
 
 export async function GET(request: NextRequest) {
-  const route = request.nextUrl.searchParams.get('route') ?? '/'
+  // 'r' param is the route without leading slash (e.g. 'settings', 'dashboard')
+  const r = request.nextUrl.searchParams.get('r') ?? ''
+  const route = r === 'index' || r === '' ? '/' : `/${r}`
   const page = PAGE_MANIFESTS[route]
 
   if (!page) {
@@ -128,12 +84,8 @@ export async function GET(request: NextRequest) {
   }
 
   const markdown = serialize(page)
-
   return new NextResponse(markdown, {
     status: 200,
-    headers: {
-      'Content-Type': 'text/surfaice; charset=utf-8',
-      'X-Surfaice-Route': route,
-    },
+    headers: { 'Content-Type': 'text/surfaice; charset=utf-8', 'X-Surfaice-Route': route },
   })
 }
