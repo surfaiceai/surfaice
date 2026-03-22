@@ -1,6 +1,6 @@
 {
   "name": "@surfaice/react",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "React annotations for Surfaice \u2014 describe your UI once, agents navigate it",
   "main": "./dist/index.js",
   "types": "dist/index.d.ts",
