@@ -52,7 +52,7 @@ interface Element {
   result?: string              // "toast 'Saved!'"
   navigates?: string           // "/dashboard"
   reveals?: Element[]          // nested elements shown on interaction
-  value?: string               // runtime value: "Haosu Wu" or template: "{user.name}"
+  value?: string               // runtime value: "Jane Doe" or template: "{user.name}"
   accepts?: string             // input type hint: "email", "string"
   options?: string[]           // for select: ["Light", "Dark", "System"]
   shows?: string               // for display elements: "{user.email}"
@@ -492,16 +492,16 @@ The key insight — `value` and `shows` props accept live runtime data:
 
 ```tsx
 // value={user.name} is evaluated at render time
-// The annotation captures "Haosu Wu", not "{user.name}"
+// The annotation captures "Jane Doe", not "{user.name}"
 <ui.element id="name" type="textbox" label="Display Name"
-  value={user.name}           // → runtime: "Haosu Wu"
+  value={user.name}           // → runtime: "Jane Doe"
   current="{user.name}"       // → template: "{user.name}" (for static export)
   action="PUT /api/profile">
   <input value={user.name} />
 </ui.element>
 ```
 
-**Runtime mode** (serving to agents): uses `value` → `current: "Haosu Wu"`
+**Runtime mode** (serving to agents): uses `value` → `current: "Jane Doe"`
 **Build/static mode** (export to file): uses `current` → `current: {user.name}`
 
 ### Extracting the Page Data

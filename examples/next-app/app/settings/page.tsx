@@ -4,8 +4,8 @@ import { ui } from '@surfaice/react'
 
 // Mock user data — in a real app this comes from your auth/API
 const mockUser = {
-  name: 'Haosu Wu',
-  email: 'haosu@example.com',
+  name: 'Jane Doe',
+  email: 'jane@example.com',
   notificationsEnabled: true,
   theme: 'System',
 }

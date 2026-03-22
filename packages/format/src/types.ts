@@ -59,7 +59,7 @@ export interface Element {
   navigates?: string
   /** Elements revealed after interaction with this element */
   reveals?: Element[]
-  /** Runtime live value (injected at render time), e.g. "Haosu Wu" */
+  /** Runtime live value (injected at render time), e.g. "Jane Doe" */
   value?: string
   /** Template binding for static export, e.g. "{user.name}" */
   current?: string
