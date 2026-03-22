@@ -1,6 +1,6 @@
 {
   "name": "@surfaice/differ",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Structural diff engine for Surfaice pages",
   "type": "module",
   "main": "./dist/index.js",
