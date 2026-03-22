@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useContext, useEffect, createContext } from 'react'
 import { SurfaiceContext } from './context.js'
 import type { Element, ElementType, Capability } from '@surfaice/format'

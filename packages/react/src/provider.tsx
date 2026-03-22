@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useRef, useState, useCallback } from 'react'
 import { SurfaiceContext } from './context.js'
 import { SurfaiceRegistry } from './registry.js'

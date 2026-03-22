@@ -1,3 +1,5 @@
+'use client'
+
 import { useContext } from 'react'
 import { SurfaiceContext } from './context.js'
 import type { SurfaicePage } from '@surfaice/format'
