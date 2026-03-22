@@ -21,7 +21,7 @@ export function withSurfaice(config: SurfaiceMiddlewareConfig = {}) {
       ...nextConfig,
       env: {
         ...nextConfig.env,
-        __SURFAICE_ENABLED: config.enabled !== false ? 'true' : 'false',
+        SURFAICE_ENABLED: config.enabled !== false ? 'true' : 'false',
       },
     }
   }
