@@ -1,6 +1,6 @@
 {
   "name": "@surfaice/cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Surfaice CLI \u2014 export, check, and diff UI manifests",
   "type": "module",
   "main": "./dist/index.js",
