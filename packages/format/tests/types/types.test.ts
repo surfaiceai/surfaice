@@ -44,7 +44,7 @@ describe('Element', () => {
       result: "toast 'Saved!'",
       navigates: '/dashboard',
       reveals: [],
-      value: 'Haosu Wu',
+      value: 'Jane Doe',
       current: '{user.name}',
       accepts: 'string',
       options: ['Light', 'Dark', 'System'],
@@ -52,7 +52,7 @@ describe('Element', () => {
     }
     expect(el.attributes).toEqual(['required'])
     expect(el.action).toBe('PUT /api/profile')
-    expect(el.value).toBe('Haosu Wu')
+    expect(el.value).toBe('Jane Doe')
     expect(el.current).toBe('{user.name}')
     expect(el.options).toHaveLength(3)
   })

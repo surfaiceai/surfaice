@@ -205,4 +205,4 @@ $ surfaice diff
 2. **Multi-page projects** — one file per page (`pages/login.surfaice.md`) or one file for the whole app with `# /route` sections?
 3. **Dynamic values** — `{user.name}` syntax for runtime values — do we specify a full template syntax or keep it freeform?
 4. **Auth config** — how does `init`/`check` handle pages behind login? Config file? CLI flags? Both?
-5. **Project name** — still working with `Surfaice`. Haosu to confirm.
+5. **Project name** — still working with `Surfaice`. to be confirmed.

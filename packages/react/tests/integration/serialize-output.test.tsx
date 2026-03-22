@@ -20,8 +20,8 @@ describe('integration — annotated React page → .surfaice.md string', () => {
           <ui.page route="/settings" name="Settings Page">
             <ui.section name="Profile">
               <ui.element id="name" type="textbox" label="Display Name"
-                value="Haosu Wu" current="{user.name}" accepts="string">
-                <input defaultValue="Haosu Wu" />
+                value="Jane Doe" current="{user.name}" accepts="string">
+                <input defaultValue="Jane Doe" />
               </ui.element>
               <ui.element id="save" type="button" label="Save Changes"
                 attributes={['destructive']} action="PUT /api/profile" result="toast 'Saved!'">

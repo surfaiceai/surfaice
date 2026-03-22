@@ -85,7 +85,7 @@ Developer writes React components
 
 4. **The format is the product** — `.surfaice.md` is a valid Markdown file. It renders in GitHub, in VSCode, anywhere. The format is designed to become a web standard.
 
-5. **Runtime data, not templates** — When serving to agents, values are live (`current: "Haosu Wu"`), not template placeholders (`current: {user.name}`). Agents see reality.
+5. **Runtime data, not templates** — When serving to agents, values are live (`current: "Jane Doe"`), not template placeholders (`current: {user.name}`). Agents see reality.
 
 ---
 
@@ -102,8 +102,8 @@ route: /settings
 # /settings
 
 ## Profile Section
-- [name] textbox "Display Name" → current: "Haosu Wu"
-- [email] textbox "Email" (readonly) → shows: "haosu@example.com"
+- [name] textbox "Display Name" → current: "Jane Doe"
+- [email] textbox "Email" (readonly) → shows: "jane@example.com"
 - [save] button "Save Changes" → PUT /api/profile → toast "Saved!"
 
 ## Danger Zone

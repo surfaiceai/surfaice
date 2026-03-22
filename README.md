@@ -87,8 +87,8 @@ When an agent requests any page with `Accept: text/surfaice`, it gets a live sna
 # /settings
 
 ## Profile
-- [name] textbox "Display Name" → current: "Haosu Wu"
-- [email] textbox "Email" (readonly) → shows: "haosu@example.com"
+- [name] textbox "Display Name" → current: "Jane Doe"
+- [email] textbox "Email" (readonly) → shows: "jane@example.com"
 - [save] button "Save Changes" → PUT /api/profile → toast "Saved!"
 
 ## Danger Zone

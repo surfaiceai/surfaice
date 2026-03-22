@@ -81,9 +81,9 @@ describe('integration — annotated React page → SurfaicePage AST', () => {
           <ui.page route="/settings">
             <ui.section name="Profile">
               <ui.element id="name" type="textbox" label="Display Name"
-                value="Haosu Wu"
+                value="Jane Doe"
                 current="{user.name}">
-                <input defaultValue="Haosu Wu" />
+                <input defaultValue="Jane Doe" />
               </ui.element>
             </ui.section>
             <PageCapture onPage={p => { captured = p }} />
@@ -93,7 +93,7 @@ describe('integration — annotated React page → SurfaicePage AST', () => {
     })
     const el = captured?.sections[0].elements[0]
     // Runtime value takes precedence for agent-facing snapshot
-    expect(el?.value).toBe('Haosu Wu')
+    expect(el?.value).toBe('Jane Doe')
   })
 
   it('children always render regardless of enabled state', () => {
