@@ -1,3 +1,6 @@
+import type { SurfaicePage } from '@surfaice/format'
+export type { SurfaicePage }
+
 // ─── Route Discovery ────────────────────────────────────────────────────────
 
 export interface DiscoveredRoute {
@@ -77,6 +80,8 @@ export interface ParsedPage {
 export interface SurfaiceTag {
   /** Tag kind: action describes an API call, auth describes the login flow */
   kind: 'action' | 'auth'
+  /** Name of the function this JSDoc is attached to, e.g. "handleSubmit" */
+  functionName?: string
   /** HTTP action string, e.g. "POST /user/login" */
   action?: string
   /** Form field ids submitted with this action */
@@ -122,6 +127,9 @@ export interface AnalyzeOptions {
 export interface PageResult {
   route: string
   filePath: string
+  /** Parsed AST — needed by differ and validation tools */
+  manifest: SurfaicePage
+  /** Serialized .surfaice.md string */
   markdown: string
   elementCount: number
   warnings: string[]

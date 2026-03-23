@@ -7,6 +7,8 @@ import type {
   MappedAction,
   AnalyzeOptions,
   AnalyzeResult,
+  PageResult,
+  SurfaicePage,
 } from '../src/index.js'
 
 describe('types', () => {
@@ -51,11 +53,13 @@ describe('types', () => {
   it('SurfaiceTag shape — action', () => {
     const tag: SurfaiceTag = {
       kind: 'action',
+      functionName: 'handleSubmit',
       action: 'POST /user/login',
       fields: ['email', 'password'],
       returns: 'access_token',
     }
     expect(tag.kind).toBe('action')
+    expect(tag.functionName).toBe('handleSubmit')
     expect(tag.fields).toHaveLength(2)
   })
 
@@ -88,6 +92,21 @@ describe('types', () => {
       dryRun: false,
     }
     expect(opts.appDir).toBe('/app')
+  })
+
+  it('PageResult includes manifest field', () => {
+    // SurfaicePage from @surfaice/format — just verify the type compiles
+    const manifest = {} as SurfaicePage
+    const page: PageResult = {
+      route: '/login',
+      filePath: '/app/login/page.tsx',
+      manifest,
+      markdown: '---\nsurfaice: v1\n---',
+      elementCount: 3,
+      warnings: [],
+    }
+    expect(page.manifest).toBeDefined()
+    expect(page.markdown).toContain('surfaice')
   })
 
   it('AnalyzeResult shape', () => {
