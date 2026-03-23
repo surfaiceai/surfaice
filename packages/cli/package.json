@@ -1,7 +1,7 @@
 {
   "name": "@surfaice/cli",
   "version": "0.0.2",
-  "description": "Surfaice CLI \u2014 export, check, and diff UI manifests",
+  "description": "Surfaice CLI — export, check, and diff UI manifests",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
@@ -28,7 +28,8 @@
   "dependencies": {
     "@surfaice/differ": "workspace:*",
     "@surfaice/format": "workspace:*",
-    "commander": "^12.0.0"
+    "commander": "^12.0.0",
+    "@surfaice/analyze": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

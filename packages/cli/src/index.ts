@@ -3,6 +3,7 @@ import { Command } from 'commander'
 import { exportCommand } from './commands/export.js'
 import { checkCommand } from './commands/check.js'
 import { diffCommand } from './commands/diff.js'
+import { analyzeCommand } from './commands/analyze.js'
 
 const program = new Command()
   .name('surfaice')
@@ -37,6 +38,31 @@ program
   .option('--json', 'Output as JSON', false)
   .action(async (opts) => {
     await diffCommand({ dir: opts.dir, baseUrl: opts.url, json: opts.json })
+  })
+
+program
+  .command('analyze <appDir>')
+  .description('Analyze Next.js App Router and generate .surfaice.md manifests')
+  .option('-o, --out <dir>', 'Output directory', 'surfaice/')
+  .option('--no-strip-locale', 'Keep [locale] segment in routes')
+  .option('--exclude <patterns...>', 'Route segment patterns to exclude', ['api'])
+  .option('--routes <routes...>', 'Specific routes to analyze')
+  .option('--dry-run', 'Print output without writing files', false)
+  .action(async (appDir: string, opts: {
+    out: string
+    stripLocale: boolean
+    exclude: string[]
+    routes?: string[]
+    dryRun: boolean
+  }) => {
+    await analyzeCommand({
+      appDir,
+      out: opts.out,
+      stripLocale: opts.stripLocale,
+      exclude: opts.exclude,
+      routes: opts.routes,
+      dryRun: opts.dryRun,
+    })
   })
 
 program.parse()
