@@ -10,3 +10,5 @@ export type {
   PageResult,
   AnalyzeResult,
 } from './types.js'
+
+export { discoverRoutes } from './discovery/nextjs-routes.js'
