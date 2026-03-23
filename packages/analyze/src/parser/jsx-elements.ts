@@ -8,6 +8,7 @@ import {
   JsxElement,
 } from 'ts-morph'
 import type { ExtractedElement, ElementType } from '../types.js'
+import { resolveElementLabel } from './label-resolver.js'
 
 /** Interactive JSX tags we care about */
 const INTERACTIVE_TAGS = new Set([
@@ -130,10 +131,13 @@ export function extractElements(sourceFile: SourceFile): ExtractedElement[] {
 
     const pos = sourceFile.getLineAndColumnAtPos(node.getStart())
 
+    // Resolve label from all available sources
+    const labelSource = resolveElementLabel(node, sourceFile)
+
     const element: ExtractedElement = {
       id,
       type,
-      label: '', // resolved by label-resolver in next task
+      label: labelSource.value,
       attributes,
       jsxTag: tag,
       sourceLocation: {
