@@ -1,0 +1,28 @@
+{
+  "name": "@surfaice/analyze",
+  "version": "0.1.0",
+  "description": "Static analyzer for Next.js App Router — generates .surfaice.md manifests",
+  "main": "./dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "dev": "tsc --watch",
+    "prepublishOnly": "pnpm build"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/surfaiceai/surfaice",
+    "directory": "packages/analyze"
+  },
+  "dependencies": {
+    "@surfaice/format": "workspace:*",
+    "ts-morph": "^24.0.0",
+    "glob": "^11.0.0"
+  },
+  "devDependencies": {
+    "vitest": "^2.0.0",
+    "typescript": "^5.5.0"
+  }
+}
